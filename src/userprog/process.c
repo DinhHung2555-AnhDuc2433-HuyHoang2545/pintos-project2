@@ -1,4 +1,3 @@
-
 #include "userprog/process.h"
 #include <debug.h>
 #include <inttypes.h>
@@ -91,9 +90,9 @@ process_execute (const char *file_name)
   while(child_status->loaded == 0)
   {
     //printf("tid:%d wait tid:%d to load\n",thread_current()->tid,child_status->child->tid);
-    sema_down(&thread_current()->sema);                          /* 阻塞，等待子进程执行完loaded */
+    sema_down(&thread_current()->sema);                          /* Block, wait for the child process to finish loaded */
   }
-  if(child_status->loaded == -1)                              /* 子进程已经加载完毕 */
+  if(child_status->loaded == -1)                          /* The child process has been loaded */
   {
     //printf("%d wake up,child %d loaded failed, ret_status:%d\n",thread_current()->tid,tid,child_status->ret_status);
     return -1;
@@ -128,7 +127,7 @@ start_process (void *file_name_)
   char *save_ptr = NULL;
   token = strtok_r(token," ",&save_ptr);
 
-  /* 加载用户进程的eip和esp eip:执行指令地址 esp:栈顶地址 */
+ /* Load eip and esp of the user process eip: execute instruction address esp: stack top address */
   success = load (token, &if_.eip, &if_.esp);
 
     /* If load failed, quit. */
@@ -141,10 +140,10 @@ start_process (void *file_name_)
   }
 
 
-  /* 参数传递 */
-  char *esp =(char *)if_.esp; // 维护栈顶
-  int argv[128]; // 存储的参数地址
-  int argc = 0, tokenlen = 0; // argc:参数数量 tokenlen:token长度
+ /* Parameter passing */
+  char *esp =(char *)if_.esp;// Maintain the top of the stack
+  int argv[128]; // Stored parameter address
+  int argc = 0, tokenlen = 0; // argc: number of parameters tokenlen: token length
   for( ; token != NULL; token = strtok_r(NULL, " ", &save_ptr)){
     tokenlen = strlen(token)+1; //'(token)\0'
     esp -= tokenlen; // decrements the stack pointer
@@ -154,7 +153,7 @@ start_process (void *file_name_)
   while((int)esp % 4!=0){ // word-align
     esp--;
   }
-  int *tmp = (int*)esp; // 接下来存argv地址
+  int *tmp = (int*)esp; // Next save the argv address
   tmp--;
   *tmp = 0; // argv[argc+1]
   tmp--; 
@@ -168,8 +167,7 @@ start_process (void *file_name_)
   *tmp = argc; // argc;
   tmp--;
   *tmp = 0; // return address
-  if_.esp = tmp;// 栈更新 
-  
+  if_.esp = tmp;// stack update
 
   
 

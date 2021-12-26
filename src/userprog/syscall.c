@@ -1,20 +1,4 @@
 
-/* Whenever a user process wants to access some kernel functionality, 
-  it invokes a system call. This is a skeleton system call handler. 
-  Currently, it just prints a message and terminates the user process. 
-  In part 2 of this project you will add code to do everything else 
-  needed by system calls. */
-
-/* limitaions:
-- Concurrent accesses will interfere with one another. You should use synchronization to ensure that only one process at a time is executing file system code.
-- The number of files that may be created is also limited.
-- File data is allocated as a single extent, that is, data in a single file must occupy a contiguous range of sectors on disk. External fragmentation can therefore become a serious problem as a file system is used over time.
-- No subdirectories.
-- File names are limited to 14 characters.
-- There is no file system repair tool anyway.
-- If a file is open when it is removed, its blocks are not deallocated and it may still be accessed by any threads that have it open, until the last one closes it. 
-*/
-
 #include "userprog/syscall.h"
 #include <stdio.h>
 #include <syscall-nr.h>
